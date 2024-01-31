@@ -8,7 +8,7 @@
 # - Optionally, if a second argument 'with_window' is provided, it also moves the currently focused window to the target workspace.
 # Note: Ensure the 'max_workspaces' variable is set to the maximum number of workspaces for wrapping behavior.
 
-# Set the maximum number of workspaces
+# Set a maximum workspace number for wrapping back to 1:
 max_workspaces=7
 
 # Get the current workspace ID
@@ -44,6 +44,10 @@ elif [ "$1" = "prev" ]; then
   fi
 elif [ "$1" = "new" ]; then
   # Find the next empty workspace, considering wrapping
+  # If all workspaces are full, then do nothing
+  if [ ${#occupied_workspaces[@]} -eq $max_workspaces ]; then
+    exit 0
+  fi
   target_workspace=$current_workspace
   while [[ " ${occupied_workspaces[*]} " =~ " ${target_workspace} " ]] || [[ $target_workspace -eq 0 ]]; do
     target_workspace=$(( (target_workspace % max_workspaces) + 1 ))
